@@ -26,11 +26,11 @@
             <h1 v-if="state==0">Se creaza echipa...</h1>
         </div>
         <div class="center" v-if="final&&state==1">
-            <h1 class="final-message" >Echipa <span class="final-team">{{team}}</span> a fost creata. Va rugam sa va verificati casutele de email.</h1>
+            <h1 class="final-message" >Echipa <span class="final-team">{{team}}</span> a fost creata. Verificati-va casutele de email.</h1>
         </div>
         <div class="center" v-if="final&&state==2">
                 <h1>Ceva nu a mers bine. Incearca din nou cu butonul de mai jos.</h1>
-                <h5>Daca ai mai primit mesajul acesta, te rugam sa ne contactezi la adresa: </h5>
+                <h5>Daca ai mai primit mesajul acesta, te rugam sa ne contactezi la adresa: <a href="mailto:asmi.unibuc@gmail.com">asmi.unibuc@gmail.com</a></h5>
                 <v-btn @click="submit">Incearca din nou</v-btn>
             </div>
     </div>

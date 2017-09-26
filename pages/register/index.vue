@@ -324,7 +324,32 @@
                                 </v-flex>
                             </v-layout>
                         </v-container>
-
+                        <v-container grid-list-md text-xs-center>
+                            <v-layout row wrap>
+                                <v-flex xs8>
+                                    <h5>Reverse Proxies</h5>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <v-btn-toggle exclusive v-model="om.web.revprox">
+                                        <v-btn flat>
+                                            1
+                                        </v-btn>
+                                        <v-btn flat>
+                                            2
+                                        </v-btn>
+                                        <v-btn flat>
+                                            3
+                                        </v-btn>
+                                        <v-btn flat>
+                                            4
+                                        </v-btn>
+                                        <v-btn flat>
+                                            5
+                                        </v-btn>
+                                    </v-btn-toggle>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                         <v-container grid-list-md text-xs-center>
                             <v-layout row wrap>
                                 <v-flex xs8>
@@ -772,17 +797,23 @@
                 <v-btn v-if="page==9" @click="submit">Submit</v-btn>
             </div>
             <div class="center" v-if="!validid">
-                <h1>Get outta here with id {{ssrid}}</h1>
+                <h1>Token-ul a fost deja inregistrat.</h1>
+                <h5>S-a produs o eroare? Te rog sa ne contactezi la adresa:
+                    <a href="mailto:asmi.unibuc@gmail.com">asmi.unibuc@gmail.com</a>
+                </h5>
             </div>
-            <div class="center" v-if="submitted&&state==1">
+            <div class="center" v-if="submitted&&state==1&&validid">
                 <h1>Multumim! Am primit datele tale.</h1>
             </div>
-            <div class="center" v-if="submitted&&state==0">
+            <div class="center" v-if="submitted&&state==0&&validid">
                 <h1>Te rugam sa astepti...</h1>
             </div>
-            <div class="center" v-if="submitted&&state==2">
+            <div class="center" v-if="submitted&&state==2&&validid">
                 <h1>Ceva nu a mers bine. Incearca din nou cu butonul de mai jos.</h1>
-                <h5>Daca ai mai primit mesajul acesta, te rugam sa ne contactezi la adresa: </h5>
+                <h5>Daca ai mai primit mesajul acesta, te rugam sa ne contactezi la adresa:
+                    <a href="mailto:asmi.unibuc@gmail.com">asmi.unibuc@gmail.com</a>
+                </h5>
+                {{UID}}; {{teamUID}}
                 <v-btn @click="submit">Incearca din nou</v-btn>
             </div>
         </div>
@@ -801,7 +832,7 @@ export default {
             submitted: false,
             validid: true,
             valid: false,
-            page: 7,
+            page: 0,
             om: {
                 prenume: "",
                 nume: "",
@@ -869,19 +900,22 @@ export default {
 
     computed: {
         id() {
-            return this.$route.params.id
+            return this.$route.query.id
         },
         formref() {
             return "form" + this.page
 
         }
+
     },
-    asyncData({ params }) {
-        return axios.get(`https://my-api/posts/${params.id}`)
+    asyncData({ query }) {
+        console.log({ token: query.token, team: decodeURI(query.team) })
+        return axios.post(`https://smarthack.azurewebsites.net/api/CheckRegistrationToken`, { token: decodeURI(query.token), team: decodeURI(query.team) })
             .then((res) => {
-                return { title: res.data.title }
+                console.log(res.request)
+                return { validid: true, UID: query.token, teamUID: decodeURI(query.team) }
             }, (err) => {
-                //return {validid:true,ssrid:params.id}
+                return { validid: false }
             })
     },
     methods: {
@@ -907,12 +941,35 @@ export default {
             this.page = 10;
             this.submitted = 1;
             this.state = 0;
-            axios.post('https://my-api/posts', this.om).then((res) => {
+            axios.post('https://smarthack.azurewebsites.net/api/CreateMember', this.getOm(this.om,this.UID,this.teamUID)).then((res) => {
                 this.state = 1;
             },
                 (err) => {
                     this.state = 2;
                 })
+        },
+
+        getOm(data,u,t) {
+            return {
+                TeamUID: t,
+                UID: u,
+                Nume: data.nume,
+                Prenume: data.prenume,
+                Credentials: JSON.stringify({
+                    profile: {
+                        univ: data.univ,
+                        an: data.an,
+                        linkedin: data.linkedin,
+                        github: data.github
+                    },
+                    cloud: data.cloud,
+                    gen: data.gen,
+                    web: data.web,
+                    db: data.db,
+                    net: data.net,
+                    sec: data.sec
+                })
+            }
         }
     }
 }
@@ -957,7 +1014,6 @@ a {
 h5 {
     text-align: left;
 }
-
 </style>
 
 
