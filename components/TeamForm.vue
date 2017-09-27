@@ -7,19 +7,19 @@
             <h3 class="logo-title"><span class="smarthack">(Smarthack)</span><span class="azure">^Azure</span></h3>
             <h5>Inscrie-ti echipa</h5>
             <v-form v-model="valid" ref="form">
-                <v-text-field label="Team Name" v-model="name" :rules="nameRules" v-on:input="trustName" required></v-text-field>
+                <v-text-field label="Numele echipei" v-model="name" :rules="nameRules" v-on:input="trustName" required></v-text-field>
                 <!--<v-checkbox label="Do you agree?" v-model="checkbox" :rules="[(v) => !!v || 'You must agree to continue!']" required></v-checkbox>-->
-                <v-btn v-bind:disabled="disabled" @click="submit">submit</v-btn>
+                <v-btn v-bind:disabled="disabled" @click="submit">Continua</v-btn>
             </v-form>
         </div>
         <div class="center" v-if="team&&!final">
             <h4>Adauga intre 3 si 4 membri pentru echipa {{team}}</h4>
             <v-form v-model="valid" ref="formem">
-                <v-text-field label="Email address" v-model="email[0]" :rules="emailReqRules" required></v-text-field>
-                <v-text-field label="Email address" v-model="email[1]" :rules="emailReqRules" required></v-text-field>
-                <v-text-field label="Email address" v-model="email[2]" :rules="emailReqRules" required></v-text-field>
-                <v-text-field label="Email address (Optional)" v-model="email[3]" :rules="emailRules"></v-text-field>
-                <v-btn @click="submitem(true)">submit</v-btn>
+                <v-text-field label="Adresa de email" v-model="email[0]" :rules="emailReqRules" required></v-text-field>
+                <v-text-field label="Adresa de email" v-model="email[1]" :rules="emailReqRules" required></v-text-field>
+                <v-text-field label="Adresa de email" v-model="email[2]" :rules="emailReqRules" required></v-text-field>
+                <v-text-field label="Adresa de email (Optional)" v-model="email[3]" :rules="emailRules"></v-text-field>
+                <v-btn @click="submitem(true)">Trimite</v-btn>
             </v-form>
         </div>
         <div class="center" v-if="final">
@@ -48,19 +48,20 @@ export default {
             validem: false,
             name: '',
             nameRules: [
-                (v) => !!v || 'Team name is required',
-                (v) => v && v.length > 2 || 'Team name must be at least 3 characters long',
-                (v) => v && !!this.validName || 'Team name is not available'
+                (v) => !!v || 'Numele echipei este necesar',
+                (v) => v && v.length > 2 || 'Numele echipei trebuie sa contina cel putin trei caractere',
+                (v) => v && !!this.validName || 'Acest nume este deja luat',
+                (v) => /^[a-zA-Z0-9 ]*$/.test(v) || 'Numele echipei nu poate contine caractere speciale'
             ],
             checkbox: false,
             validName: true,
             nameChecked: false,
             emailRules: [
-                (v) => /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+                (v) => /^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Adresa de email trebuie sa fie valida'
             ],
             emailReqRules: [
-                (v) => !!v || 'E-mail is required',
-                (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+                (v) => !!v || 'Adresa de email este necesara',
+                (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Adresa de email trebuie sa fie valida'
             ],
             email: ["", "", "", ""],
             final: false,

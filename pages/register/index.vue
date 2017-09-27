@@ -815,7 +815,7 @@
                 <v-btn v-if="page==9" @click="submit">Submit</v-btn>
             </div>
             <div class="center" v-if="!validid">
-                <h1>Token-ul a fost deja inregistrat.</h1>
+                <h1>Te-ai inregistrat deja.</h1>
                 <h5>S-a produs o eroare? Te rog sa ne contactezi la adresa:
                     <a href="mailto:asmi.unibuc@gmail.com">asmi.unibuc@gmail.com</a>
                 </h5>
