@@ -19,7 +19,7 @@
                 <v-text-field label="Email address" v-model="email[1]" :rules="emailReqRules" required></v-text-field>
                 <v-text-field label="Email address" v-model="email[2]" :rules="emailReqRules" required></v-text-field>
                 <v-text-field label="Email address (Optional)" v-model="email[3]" :rules="emailRules"></v-text-field>
-                <v-btn @click="submitem">submit</v-btn>
+                <v-btn @click="submitem(true)">submit</v-btn>
             </v-form>
         </div>
         <div class="center" v-if="final">
@@ -31,7 +31,7 @@
         <div class="center" v-if="final&&state==2">
                 <h1>Ceva nu a mers bine. Incearca din nou cu butonul de mai jos.</h1>
                 <h5>Daca ai mai primit mesajul acesta, te rugam sa ne contactezi la adresa: <a href="mailto:asmi.unibuc@gmail.com">asmi.unibuc@gmail.com</a></h5>
-                <v-btn @click="submit">Incearca din nou</v-btn>
+                <v-btn @click="submitem(false)">Incearca din nou</v-btn>
             </div>
     </div>
 </template>
@@ -73,7 +73,7 @@ export default {
         },
         fullTeam() {
             return {
-                TeamName: this.team,
+                TeamName: btoa(this.team),
                 members: this.email
             }
         }
@@ -82,10 +82,13 @@ export default {
         log() {
             console.log(this.$store)
         },
-        submitem() {
+        submitem(validate) {
+            if(validate==true)
             var x = this.$refs.formem.validate()
+            else var x = true
+            this.state=0
             this.final = true;
-            if (x == true) {
+            if (x == true ) {
                 axios.post('https://smarthack.azurewebsites.net/team', this.fullTeam).then(res => {
                     this.state = 1;
                 },

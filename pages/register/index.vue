@@ -157,7 +157,16 @@
                                 </v-flex>
                             </v-layout>
                         </v-container>
-                        <v-text-field label="Alte limbaje de programare sau scripting" v-model="om.gen.other"></v-text-field>
+                        <v-container grid-list-md text-xs-center>
+                            <v-layout row wrap>
+                                <v-flex xs4>
+                                    <h5>Alte limbaje de programare sau scripting</h5>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-text-field multi-line rows="2" label="eg. Python, Ruby, Bash" v-model="om.gen.other"></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                         <v-container grid-list-md text-xs-center>
                             <v-layout row wrap>
                                 <v-flex xs8>
@@ -297,7 +306,16 @@
                                 </v-flex>
                             </v-layout>
                         </v-container>
-                        <v-text-field label="Frontend Frameworks" v-model="om.web.other"></v-text-field>
+                        <v-container grid-list-md text-xs-center>
+                            <v-layout row wrap>
+                                <v-flex xs4>
+                                    <h5>Frontend Frameworks</h5>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-text-field rows="2" multi-line label="Eg. Angular, React, Vuejs" v-model="om.web.other"></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                         <v-container grid-list-md text-xs-center>
                             <v-layout row wrap>
                                 <v-flex xs8>
@@ -803,7 +821,7 @@
                 </h5>
             </div>
             <div class="center" v-if="submitted&&state==1&&validid">
-                <h1>Multumim! Am primit datele tale.</h1>
+                <h1>Multumim! Te-ai inregistrat cu succes.</h1>
             </div>
             <div class="center" v-if="submitted&&state==0&&validid">
                 <h1>Te rugam sa astepti...</h1>
@@ -909,10 +927,8 @@ export default {
 
     },
     asyncData({ query }) {
-        console.log({ token: query.token, team: decodeURI(query.team) })
         return axios.post(`https://smarthack.azurewebsites.net/api/CheckRegistrationToken`, { token: decodeURI(query.token), team: decodeURI(query.team) })
             .then((res) => {
-                console.log(res.request)
                 return { validid: true, UID: query.token, teamUID: decodeURI(query.team) }
             }, (err) => {
                 return { validid: false }
@@ -941,7 +957,7 @@ export default {
             this.page = 10;
             this.submitted = 1;
             this.state = 0;
-            axios.post('https://smarthack.azurewebsites.net/api/CreateMember', this.getOm(this.om,this.UID,this.teamUID)).then((res) => {
+            axios.post('https://smarthack.azurewebsites.net/api/CreateMember', this.getOm(this.om, this.UID, this.teamUID)).then((res) => {
                 this.state = 1;
             },
                 (err) => {
@@ -949,7 +965,7 @@ export default {
                 })
         },
 
-        getOm(data,u,t) {
+        getOm(data, u, t) {
             return {
                 TeamUID: t,
                 UID: u,
@@ -968,7 +984,7 @@ export default {
                     db: data.db,
                     net: data.net,
                     sec: data.sec
-                })
+                }).replace(/\"/g, "'")
             }
         }
     }
